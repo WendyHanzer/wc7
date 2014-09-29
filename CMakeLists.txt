@@ -31,7 +31,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     #pkg_search_module(PYTHON REQUIRED python2)
     include_directories(${SDL2_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
-    set(LIBRARIES_TO_LINK ${SDL2_LIBRARIES} ${GLEW_LIBRARIES} ${Boost_LIBRARIES})
+    set(LIBRARIES_TO_LINK ${SDL2_LIBRARIES} ${GLEW_LIBRARIES} ${Boost_LIBRARIES} "freeimageplus")
 
 else()
     message(STATUS "Windows OS Detected")

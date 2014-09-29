@@ -92,7 +92,7 @@ void Water::init()
             geometry[i+2].normal[j] = normal[j];
         }
 
-        std::cout << "norm: " << glm::to_string(normal) << std::endl;
+        //std::cout << "norm: " << glm::to_string(normal) << std::endl;
     }
 
     initGL();

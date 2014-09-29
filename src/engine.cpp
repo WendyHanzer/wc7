@@ -4,8 +4,8 @@
 #include "clock.hpp"
 
 #include <SDL.h>
-#include <gdal_priv.h>
-#include <ogrsf_frmts.h>
+//#include <gdal_priv.h>
+//#include <ogrsf_frmts.h>
 #include <boost/program_options.hpp>
 
 #include <iostream>
