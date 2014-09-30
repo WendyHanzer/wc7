@@ -81,14 +81,14 @@ void Input::tick(float dt)
                     break;
 
                     case SDLK_LEFT:
-                        engine->graphics->water->lightAngle -= 0.1f;
-
+                        //engine->graphics->water->lightAngle -= 0.1f;
+                        keyPresses[SDLK_LEFT] = true;
 
                     break;
 
                     case SDLK_RIGHT:
-                        engine->graphics->water->lightAngle += 0.1f;
-
+                        //engine->graphics->water->lightAngle += 0.1f;
+                        keyPresses[SDLK_RIGHT] = true;
 
                     break;
                 }
@@ -128,6 +128,14 @@ void Input::tick(float dt)
                     case SDLK_f:
                         keyPresses[SDLK_f] = false;
                         //engine->graphics->camera->moveDown();
+                    break;
+
+                    case SDLK_LEFT:
+                        keyPresses[SDLK_LEFT] = false;
+                    break;
+
+                    case SDLK_RIGHT:
+                        keyPresses[SDLK_RIGHT] = false;
                     break;
                 }
             break;
@@ -170,6 +178,9 @@ void Input::resetKeyPresses()
     keyPresses[SDLK_f] = false;
 
     keyPresses[KMOD_LSHIFT] = false;
+
+    keyPresses[SDLK_LEFT] = false;
+    keyPresses[SDLK_RIGHT] = false;
 }
 
 void Input::handleMovementKeys()
@@ -198,4 +209,9 @@ void Input::handleMovementKeys()
     if(keyPresses[SDLK_f])
         engine->graphics->camera->moveDown();
 
+    if(keyPresses[SDLK_LEFT])
+        engine->graphics->water->lightAngle -= 0.1f;
+
+    if(keyPresses[SDLK_RIGHT])
+        engine->graphics->water->lightAngle += 0.1f;
 }

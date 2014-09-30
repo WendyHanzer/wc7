@@ -33,22 +33,27 @@ void Water::init()
     std::default_random_engine gen(rd());
     std::uniform_real_distribution<float> dist(0.0f, 2.0f);
 
+    /*
+    bool firstx = true;
+    bool firstz = true;
     for(float x = 0.0f; x < width; x += density) {
         for(float z = 0.0f; z < height; z += density) {
+            if(firstz || firstx) {
+                vert.pos[0] = x;
+                vert.pos[1] = 0;//dist(gen);
+                vert.pos[2] = z;
+                geometry.push_back(vert);
 
-            vert.pos[0] = x;
-            vert.pos[1] = 0;//dist(gen);
-            vert.pos[2] = z;
-            geometry.push_back(vert);
 
+                //float y_2_5 = dist(gen);
 
-            //float y_2_5 = dist(gen);
+                vert.pos[0] = x;
+                vert.pos[1] = 0;//dist(gen);
+                vert.pos[2] = z+density;
+                geometry.push_back(vert);
 
-            vert.pos[0] = x;
-            vert.pos[1] = 0;//dist(gen);
-            vert.pos[2] = z+density;
-            geometry.push_back(vert);
-
+                firstz = false;
+            }
 
             //float y_3_4 = 0;//dist(gen);
 
@@ -67,17 +72,42 @@ void Water::init()
             vert.pos[1] = dist(gen);
             vert.pos[2] = z+density;
             geometry.push_back(vert);
-            */
+            
 
             vert.pos[0] = x+density;
             vert.pos[1] = dist(gen);
             vert.pos[2] = z+density;
             geometry.push_back(vert);
         }
+        
+
+        firstx = false;
+        firstz = true;
+    }*/
+
+    for(float x = 0.0f; x < width; x += density) {
+        for(float z = 0.0f; z < height; z += density) {
+            vert.pos[0] = x;
+            vert.pos[1] = dist(gen);
+            vert.pos[2] = z;
+
+            geometry.push_back(vert);
+        }
     }
 
+
     unsigned int index = 0;
-    for(int i = 0; i < geometry.size(); i += 2) {
+    for(int x = 0; x < width -1; x++) {
+        for(int z = 0; z < height-1; z++) {
+            indices.push_back(z * width + x);
+            indices.push_back((z+1) * width + x);
+            indices.push_back((z*width) + x + 1);
+
+            indices.push_back((z * width) + x + 1);
+            indices.push_back((z + 1) * width + x);
+            indices.push_back((z+1) * width + x + 1);
+        }
+        /*
         indices.push_back(index);
         indices.push_back(index+1);
         indices.push_back(index+2);
@@ -86,6 +116,7 @@ void Water::init()
         indices.push_back(index+3);
 
         index += 2;
+        */
     }
 
     model = glm::translate(model, glm::vec3(-width/2.0f, 0.0f, -height/2.0f));
