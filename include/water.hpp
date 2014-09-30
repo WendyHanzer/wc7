@@ -31,13 +31,14 @@ private:
     float density;
 
     GLuint program;
-    GLuint vbo, vao;
+    GLuint vbo, vao, vio;
 
     GLint loc_pos, loc_mvp, loc_view, loc_normal, loc_model, loc_modelView;
     GLint loc_lightDir;
 
     std::vector<Vertex> geometry;
     glm::mat4 model;
+    std::vector<unsigned int> indices;
 };
 
 #endif // WATER_HPP

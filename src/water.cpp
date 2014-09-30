@@ -35,25 +35,29 @@ void Water::init()
 
     for(float x = 0.0f; x < width; x += density) {
         for(float z = 0.0f; z < height; z += density) {
+
             vert.pos[0] = x;
             vert.pos[1] = 0;//dist(gen);
             vert.pos[2] = z;
             geometry.push_back(vert);
 
-            float y_2_5 = dist(gen);
+
+            //float y_2_5 = dist(gen);
 
             vert.pos[0] = x;
             vert.pos[1] = 0;//dist(gen);
             vert.pos[2] = z+density;
             geometry.push_back(vert);
 
-            float y_3_4 = 0;//dist(gen);
+
+            //float y_3_4 = 0;//dist(gen);
 
             vert.pos[0] = x+density;
             vert.pos[1] = 0;//dist(gen);
             vert.pos[2] = z;
             geometry.push_back(vert);
 
+            /*
             vert.pos[0] = x+density;
             vert.pos[1] = dist(gen);
             vert.pos[2] = z;
@@ -63,23 +67,35 @@ void Water::init()
             vert.pos[1] = dist(gen);
             vert.pos[2] = z+density;
             geometry.push_back(vert);
+            */
 
             vert.pos[0] = x+density;
             vert.pos[1] = dist(gen);
             vert.pos[2] = z+density;
             geometry.push_back(vert);
-
         }
+    }
+
+    unsigned int index = 0;
+    for(int i = 0; i < geometry.size(); i += 2) {
+        indices.push_back(index);
+        indices.push_back(index+1);
+        indices.push_back(index+2);
+        indices.push_back(index+2);
+        indices.push_back(index+1);
+        indices.push_back(index+3);
+
+        index += 2;
     }
 
     model = glm::translate(model, glm::vec3(-width/2.0f, 0.0f, -height/2.0f));
 
     glm::vec3 v1, v2, v3, arrow1, arrow2, normal;
 
-    for(int i = 0; i < geometry.size(); i += 3) {
-        v1 = vertexToVec3(geometry[i]);
-        v2 = vertexToVec3(geometry[i+1]);
-        v3 = vertexToVec3(geometry[i+2]);
+    for(int i = 0; i < indices.size(); i += 3) {
+        v1 = vertexToVec3(geometry[indices[i]]);
+        v2 = vertexToVec3(geometry[indices[i+1]]);
+        v3 = vertexToVec3(geometry[indices[i+2]]);
 
         arrow1 = v2 - v1;
         arrow2 = v3 - v1;
@@ -87,9 +103,9 @@ void Water::init()
         normal = glm::normalize(glm::cross(arrow1, arrow2));
 
         for(int j = 0; j < 3; j++) {
-            geometry[i].normal[j] = normal[j];
-            geometry[i+1].normal[j] = normal[j];
-            geometry[i+2].normal[j] = normal[j];
+            geometry[indices[i]].normal[j] = normal[j];
+            geometry[indices[i+1]].normal[j] = normal[j];
+            geometry[indices[i+2]].normal[j] = normal[j];
         }
 
         //std::cout << "norm: " << glm::to_string(normal) << std::endl;
@@ -119,6 +135,10 @@ void Water::initGL()
     Vertex *geo = geometry.data();
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * geometry.size(), geo, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &vio);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vio);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
 }
 
 void Water::tick(float dt)
@@ -129,7 +149,7 @@ void Water::tick(float dt)
     lightDir[1] = y;
     lightDir[0] = x;
 
-    std::cout << "x: " << x << " y: " << y << std::endl;
+    //std::cout << "x: " << x << " y: " << y << std::endl;
 }
 
 void Water::render()
@@ -165,9 +185,10 @@ void Water::render()
                            sizeof(Vertex),
                            (void*)offsetof(Vertex,normal));
 
-
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vio);
     // draw object
-    glDrawArrays(GL_TRIANGLES, 0, geometry.size());//mode, starting index, count
+    //glDrawArrays(GL_TRIANGLES, 0, geometry.size());//mode, starting index, count
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
 
     // disable attribute pointers
     glDisableVertexAttribArray(loc_pos);
