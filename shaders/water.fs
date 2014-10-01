@@ -30,7 +30,7 @@ out vec4 glColor;
 void main() {
     AmbientLight light;
     light.color = vec3(1,1,1);
-    light.intensity = 0.0;
+    light.intensity = 0.1;
 
     DirectionalLight d_light;
     d_light.ambient = light;

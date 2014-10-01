@@ -96,16 +96,16 @@ void Water::init()
     }
 
 
-    unsigned int index = 0;
-    for(int x = 0; x < width -1; x++) {
-        for(int z = 0; z < height-1; z++) {
-            indices.push_back(z * width + x);
-            indices.push_back((z+1) * width + x);
-            indices.push_back((z*width) + x + 1);
+    unsigned int index = 0, scaledWidth = width/density, scaledHeight = height/density;    
+    for(int x = 0; x < scaledWidth - 1; x++) {
+        for(int z = 0; z < scaledHeight - 1; z++) {
+            indices.push_back(z * scaledHeight + x);
+            indices.push_back((z*scaledHeight) + x + 1);
+            indices.push_back((z+1) * scaledHeight + x);
 
-            indices.push_back((z * width) + x + 1);
-            indices.push_back((z + 1) * width + x);
-            indices.push_back((z+1) * width + x + 1);
+            indices.push_back((z * scaledHeight) + x + 1);
+            indices.push_back((z+1) * scaledHeight + x + 1);
+            indices.push_back((z + 1) * scaledHeight + x);
         }
         /*
         indices.push_back(index);

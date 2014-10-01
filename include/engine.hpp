@@ -17,6 +17,9 @@ struct Options {
     std::string data_directory;
     float sample_probability;
     float density;
+    float light_speed;
+
+    std::vector<unsigned int> water_size;
 };
 
 class Input;

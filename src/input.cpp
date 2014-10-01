@@ -210,8 +210,8 @@ void Input::handleMovementKeys()
         engine->graphics->camera->moveDown();
 
     if(keyPresses[SDLK_LEFT])
-        engine->graphics->water->lightAngle -= 0.1f;
+        engine->graphics->water->lightAngle -= engine->getOptions().light_speed;
 
     if(keyPresses[SDLK_RIGHT])
-        engine->graphics->water->lightAngle += 0.1f;
+        engine->graphics->water->lightAngle += engine->getOptions().light_speed;
 }

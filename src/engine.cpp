@@ -87,6 +87,9 @@ void Engine::parseArgs()
     opts::options_description desc("CS791a Program Options");
     opts::variables_map vm;
 
+    options.water_size.push_back(2000);
+    options.water_size.push_back(2000);
+
     desc.add_options()
         ("help,h", "Print Help Message")
         ("verbose,v", "Set Program Output to Verbose")
@@ -94,11 +97,14 @@ void Engine::parseArgs()
         ("wireframe,w", "Only Render Wireframes")
         ("sensitivity", opts::value<float>(&options.camera_sensitivity)->default_value(0.25f), "Mouse Sensitivity")
         ("speed", opts::value<float>(&options.camera_speed)->default_value(5.0f), "Camera Speed")
-        ("density,d", opts::value<float>(&options.density)->default_value(1.0f), "Density");
+        ("density,d", opts::value<float>(&options.density)->default_value(1.0f), "Density")
+        ("size,s", opts::value<std::vector<unsigned int>>(&options.water_size), "Water Size")
+        ("light,l", opts::value<float>(&options.light_speed)->default_value(0.05f), "Speed of Light :p");
 
     opts::positional_options_description pos;
     //pos.add("terrain", -1);
     //pos.add("texture", 1);
+    pos.add("size", 2);
 
     opts::store(opts::command_line_parser(_argc, _argv).options(desc).positional(pos).run(), vm);
 

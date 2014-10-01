@@ -89,8 +89,13 @@ void Graphics::initGL()
     createShaderProgram("water", shader_data);
 
 
+    const auto& size = engine->getOptions().water_size;
 
-    water = new Water(engine, 200, 200);
+    if(size.size() == 2)
+        water = new Water(engine, size[0], size[1]);
+
+    else
+        water = new Water(engine, 2000, 2000);
 }
 
 void Graphics::tick(float dt)
