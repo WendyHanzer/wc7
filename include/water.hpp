@@ -28,15 +28,16 @@ public:
 private:
     Engine *engine;
     float width, height;
-    float density;
+    float density, specIntensity, specPower;
 
     GLuint program;
     GLuint vbo, vao, vio;
 
-    GLint loc_pos, loc_mvp, loc_view, loc_normal, loc_model, loc_modelView;
+    GLint loc_pos, loc_mvp, loc_view, loc_normal, loc_model, loc_modelView, loc_specPower, loc_specIntensity, loc_camPos;
     GLint loc_lightDir;
 
     std::vector<Vertex> geometry;
+    std::vector<glm::vec3> faceNormals;
     glm::mat4 model;
     std::vector<unsigned int> indices;
 };

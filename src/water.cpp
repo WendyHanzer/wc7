@@ -3,6 +3,7 @@
 #include "vertex.hpp"
 #include "graphics.hpp"
 #include "light.hpp"
+#include "camera.hpp"
 
 #include <random>
 #include <iostream>
@@ -15,6 +16,8 @@ Water::Water(Engine *eng, float w, float h)
     : engine(eng), width(w), height(h)
 {
     lightAngle = 0.0f;
+    specIntensity = 1;
+    specPower = 32;
     lightDir = glm::vec3(0,-1,0);
     density = engine->getOptions().density;
     init();
@@ -31,7 +34,7 @@ void Water::init()
 
     std::random_device rd;
     std::default_random_engine gen(rd());
-    std::uniform_real_distribution<float> dist(0.0f, 2.0f);
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
     /*
     bool firstx = true;
@@ -96,7 +99,7 @@ void Water::init()
     }
 
 
-    unsigned int index = 0, scaledWidth = width/density, scaledHeight = height/density;    
+    unsigned int scaledWidth = width/density, scaledHeight = height/density;    
     for(int x = 0; x < scaledWidth - 1; x++) {
         for(int z = 0; z < scaledHeight - 1; z++) {
             indices.push_back(z * scaledHeight + x);
@@ -123,7 +126,22 @@ void Water::init()
 
     glm::vec3 v1, v2, v3, arrow1, arrow2, normal;
 
+    // calculate each face's normal
     for(int i = 0; i < indices.size(); i += 3) {
+        v1 = vertexToVec3(geometry[indices[i]]);
+        v2 = vertexToVec3(geometry[indices[i+1]]);
+        v3 = vertexToVec3(geometry[indices[i+2]]);
+
+        arrow1 = v2 - v1;
+        arrow2 = v3 - v1;
+
+        normal = glm::normalize(glm::cross(arrow1, arrow2));
+        faceNormals.push_back(normal);
+
+        //std::cout << "norm: " << glm::to_string(normal) << std::endl;
+    }
+
+    /*for(int i = 0; i < indices.size(); i += 3) {
         v1 = vertexToVec3(geometry[indices[i]]);
         v2 = vertexToVec3(geometry[indices[i+1]]);
         v3 = vertexToVec3(geometry[indices[i+2]]);
@@ -140,7 +158,20 @@ void Water::init()
         }
 
         //std::cout << "norm: " << glm::to_string(normal) << std::endl;
+    }*/
+
+    // loop through vertices and assigned them averaged face normals
+    int skipped = 0;
+    for(int i=0; i < geometry.size(); i++){
+        // only hand non edge cases for now
+        if(i/scaledWidth != 0 && i/scaledWidth != scaledWidth-1 && i%scaledHeight != 0 && i%scaledHeight != scaledHeight-1){
+            
+        }
+        else{
+            skipped++;
+        }
     }
+    std::cout << skipped << " skipped" << std::endl;
 
     initGL();
 }
@@ -156,6 +187,9 @@ void Water::initGL()
     loc_model = glGetUniformLocation(program, "model");
     loc_modelView = glGetUniformLocation(program, "modelView");
     loc_lightDir = glGetUniformLocation(program, "light_dir");
+    loc_specIntensity = glGetUniformLocation(program, "specularIntensity");
+    loc_specPower = glGetUniformLocation(program, "specularPower");
+    loc_camPos = glGetUniformLocation(program, "cameraPos");
 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -198,6 +232,11 @@ void Water::render()
     glUniformMatrix4fv(loc_model, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(loc_modelView, 1, GL_FALSE, glm::value_ptr(modelView));
     glUniform3fv(loc_lightDir, 1, glm::value_ptr(lightDir));
+    auto pos = engine->graphics->camera->getPos();
+    glUniform3fv(loc_camPos, 1, glm::value_ptr(pos));
+    glUniform1f(loc_specIntensity, specIntensity);
+    glUniform1f(loc_specPower, specPower);
+
 
     glEnableVertexAttribArray(loc_pos);
     glEnableVertexAttribArray(loc_normal);
