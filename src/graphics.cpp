@@ -70,7 +70,7 @@ void Graphics::initGL()
     if(engine->getOptions().verbose)
         std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-    glClearColor(0.0, 0.2, 0.2, 1);
+    glClearColor(0.0, 0.0, 0.0, 1);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     //glEnable(GL_TEXTURE_2D);
@@ -95,7 +95,7 @@ void Graphics::initGL()
         water = new Water(engine, size[0], size[1]);
 
     else
-        water = new Water(engine, 2000, 2000);
+        water = new Water(engine, 200, 200);
 }
 
 void Graphics::tick(float dt)
@@ -137,7 +137,7 @@ void Graphics::windowResized()
     getWindowSize(width, height);
     glViewport(0, 0, width, height);
     projection = glm::perspective(45.0f, float(width) / float(height),
-                                        0.01f, 5000.0f);
+                                        0.01f, 1000000.0f);
 }
 
 void Graphics::getWindowSize(int &w, int &h) const
@@ -209,6 +209,11 @@ GLuint Graphics::createShaderProgram(std::string name, std::vector<GLuint> shade
     glGetProgramiv(program, GL_LINK_STATUS, &shader_status);
     if(!shader_status) {
         std::cerr << "Unable to create shader program!" << std::endl;
+
+        char buffer[512];
+        glGetShaderInfoLog(program, 512, NULL, buffer); // inserts the error into the buffer
+        std::cerr << buffer << std::endl; 
+
         //engine->stop();
         exit(1);
     }
@@ -236,6 +241,7 @@ GLuint Graphics::createTextureFromFile(std::string fileName, GLenum target)
 
         GLuint texId;
 
+        glActiveTexture(GL_TEXTURE0);
         glGenTextures(1, &texId);
 
         if(engine->getOptions().verbose) {
@@ -248,7 +254,7 @@ GLuint Graphics::createTextureFromFile(std::string fileName, GLenum target)
 
         if(target == GL_TEXTURE_2D) {
             glTexImage2D(target, 0, GL_RGBA, image.getWidth(), image.getHeight(),
-                0, GL_RGBA, GL_UNSIGNED_BYTE, (void*) image.accessPixels());
+                0, GL_BGRA, GL_UNSIGNED_BYTE, (void*) image.accessPixels());
         }
         else {
             glTexImage1D(target, 0, GL_RGBA, image.getWidth(), 0,
@@ -262,4 +268,8 @@ GLuint Graphics::createTextureFromFile(std::string fileName, GLenum target)
         std::cerr << "Unable to open image: " << fileName << std::endl;
         return 0;
     }
+}
+
+void Graphics::setClearColor(glm::vec3 color){
+    glClearColor(color[0], color[1], color[2], 1);
 }

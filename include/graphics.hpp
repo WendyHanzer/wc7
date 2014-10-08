@@ -42,7 +42,7 @@ public:
     GLuint createTextureFromFile(std::string fileName, GLenum target);
 
     SDL_Window* getRenderWindow() const {return window;}
-
+    void setClearColor(glm::vec3);
     glm::mat4 view, projection;
 
     Camera *camera;

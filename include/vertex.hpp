@@ -6,6 +6,7 @@
 struct Vertex {
     GLfloat pos[3];
     GLfloat normal[3];
+    GLfloat texture[2];
 };
 
 #endif // VERTEX_HPP

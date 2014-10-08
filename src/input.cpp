@@ -210,8 +210,38 @@ void Input::handleMovementKeys()
         engine->graphics->camera->moveDown();
 
     if(keyPresses[SDLK_LEFT])
-        engine->graphics->water->lightAngle -= engine->getOptions().light_speed;
+        if(engine->graphics->water->lightAngle > 0){
+            engine->graphics->water->lightAngle -= engine->getOptions().light_speed;
+
+            // set the color of the sky based distance form 1.57
+            float dist = 1.57 - engine->graphics->water->lightAngle;
+            if(dist < 0){ dist = -dist; }
+
+            float c = (1.57-dist)/1.57;
+            float r = c * 0;
+            float g = c * .75;
+            float b = c;
+            glm::vec3 color = glm::vec3(r, g, b);
+            engine->graphics->setClearColor(color);
+
+            engine->graphics->water->setAmbient(c * 0.5);
+        }
 
     if(keyPresses[SDLK_RIGHT])
-        engine->graphics->water->lightAngle += engine->getOptions().light_speed;
+        if(engine->graphics->water->lightAngle < 3.14){
+            engine->graphics->water->lightAngle += engine->getOptions().light_speed;
+
+            // set the color of the sky based distance form 1.57
+            float dist = 1.57 - engine->graphics->water->lightAngle;
+            if(dist < 0){ dist = -dist; }
+            float c = (1.57-dist)/1.57;
+            float r = c * 0;
+            float g = c * .75;
+            float b = c;
+            glm::vec3 color = glm::vec3(r, g, b);
+            engine->graphics->setClearColor(color);
+
+            engine->graphics->water->setAmbient(c * 0.5);
+        }
+
 }
